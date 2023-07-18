@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option go_package = "github.com/amar-jay/first_twirp/pkg/proto";
+
+// [BotService] is a personal assistance service that answers a user's questions, makes recommendations and ...
+service BotService {
+
+	rpc AnswerQuestion(AnswerQuestionRequest) returns (AnswerQuestionResponse);
+	rpc Recommend(RecommendRequest) returns (RecommendResponse);
+}
+
+// [AnswerQuestionRequest] is the request object for the AnswerQuestion method.
+message AnswerQuestionRequest {
+	bytes openai = 1;
+	string question = 2;
+}
+
+// [AnswerQuestionResponse] is the response object for the AnswerQuestion method.
+message AnswerQuestionResponse {
+	string answer = 1; // response to the question
+	Error error = 2; // errror if any
+}
+
+// [Error] is the error object for the AnswerQuestion method.
+message Error {
+	int32 code = 1;
+	string message = 2;
+}
+
+// [RecommendRequest] is the request object for the Recommend method.
+message RecommendRequest {
+	string question = 1;
+}
+
+// [RecommendResponse] is the response object for the Recommend method.
+message RecommendResponse {
+	string answer = 1; // response to the question
+	Error error = 2; // errror if any
+}
