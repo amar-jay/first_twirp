@@ -18,8 +18,8 @@ func main() {
 	ctx := context.Background()
 
 	res, err := client.AnswerQuestion(ctx, &pb.AnswerQuestionRequest{
-		Language:     "en",
-		Question:     "What is the answer to the Ultimate Question of Life, the Universe, and Everything?"})
+		Language: "en",
+		Question: "What is the answer to the Ultimate Question of Life, the Universe, and Everything?"})
 	if err != nil {
 		println("Error: ", err.Error())
 		return

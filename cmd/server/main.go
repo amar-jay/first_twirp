@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"log"
-	"net/http"
 	"os"
 
 	pb "github.com/amar-jay/first_twirp/pkg/proto"
@@ -12,6 +11,11 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sashabaranov/go-openai"
 	"github.com/twitchtv/twirp"
+
+	// fiber
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func serverHooks() *twirp.ServerHooks {
@@ -40,6 +44,9 @@ func main() {
 		log.Fatal("OPENAI_SECRET not set")
 	}
 
+	app := fiber.New()
+	app.Use(cors.New())
+
 	cl := openai.NewClient(secret)
 	comp := service.NewChatCompletion(cl, 10, service.English)
 	s := &service.BotService{
@@ -50,5 +57,8 @@ func main() {
 	handler := pb.NewBotServiceServer(s, serverHooks()) // bind interface and implementation
 
 	println("Listening on port: ", *port)
-	http.ListenAndServe(":"+*port, handler)
+	fiberHandler := adaptor.HTTPHandler(handler)
+	app.Use("/twirp", fiberHandler)
+	// serve using fiber
+	app.Listen(":" + *port)
 }
