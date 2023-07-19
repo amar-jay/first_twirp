@@ -8,6 +8,7 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v1.0.2 // indirect
 	github.com/golang/protobuf v1.5.0 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
+	github.com/joho/godotenv v1.5.1
 	github.com/lyft/protoc-gen-star/v2 v2.0.3 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/sashabaranov/go-openai v1.14.0

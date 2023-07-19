@@ -3,11 +3,8 @@ package main
 import (
 	"context"
 	"net/http"
-	"os"
 
 	pb "github.com/amar-jay/first_twirp/pkg/proto"
-	"github.com/amar-jay/first_twirp/pkg/service"
-	"github.com/sashabaranov/go-openai"
 )
 
 func main() {
@@ -19,16 +16,10 @@ func main() {
 	}
 
 	ctx := context.Background()
-	// set openai.Client in context
-	openaicl := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
-	if openaicl == nil {
-		println("openai is nil")
-		return
-	}
 
-	ctx = context.WithValue(ctx, service.OPENAI, openaicl)
 	res, err := client.AnswerQuestion(ctx, &pb.AnswerQuestionRequest{
-		Question: "What is the answer to the Ultimate Question of Life, the Universe, and Everything?"})
+		Language:     "en",
+		Question:     "What is the answer to the Ultimate Question of Life, the Universe, and Everything?"})
 	if err != nil {
 		println("Error: ", err.Error())
 		return

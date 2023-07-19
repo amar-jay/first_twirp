@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"math/rand"
-	"strconv"
 
 	pb "github.com/amar-jay/first_twirp/pkg/proto"
 	"github.com/sashabaranov/go-openai"
@@ -11,31 +9,47 @@ import (
 )
 
 type BotService struct {
-	// openai *openai.Client
+	Openai *openai.Client
+	Chat   *ChatCompletion
 }
 
-func (s *BotService) AnswerQuestion(ctx context.Context, req *pb.AnswerQuestionRequest) (res *pb.AnswerQuestionResponse, err error) {
-	// get openai client from context
-	v := ctx.Value(OPENAI)
-	if v == nil {
-		return nil, twirp.InternalError("openai is nil 1")
+func setLang(lang string) Language {
+	switch lang {
+	case "en":
+		return English
+	case "fr":
+		return French
+	case "tr":
+		return Turkish
+	case "ar":
+		return Arabic
+	default:
+		return English
 	}
-	_ = v.(*openai.Client)
-	if err != nil {
-		return nil, twirp.InternalError("openai is nil")
-	}
+}
 
-	// TODO: implementation of the service
+// answer queestion using openai chatgpt
+func (s *BotService) AnswerQuestion(ctx context.Context, req *pb.AnswerQuestionRequest) (res *pb.AnswerQuestionResponse, err error) {
+	stream, err := s.Chat.Complete(ctx, setLang(req.Language), req.Question)
+	if err != nil {
+		return nil, twirp.InternalErrorWith(err)
+	}
 
 	return &pb.AnswerQuestionResponse{
-		Answer: "The answer is 42",
+		Answer: stream.String(),
 	}, nil
 }
 
-func (s *BotService) Recommend(ctx context.Context, size *pb.RecommendRequest) (res *pb.RecommendResponse, err error) {
+func (s *BotService) Recommend(ctx context.Context, req *pb.RecommendRequest) (res *pb.RecommendResponse, err error) {
 	// TODO: implementation of the service
+	stream, err := s.Chat.Complete(ctx, setLang(req.Language), req.Request)
+	if err != nil {
+		return nil, twirp.InternalErrorWith(err)
+	}
 
 	return &pb.RecommendResponse{
-		Answer: strconv.Itoa(rand.Intn(100)),
+		Recommendations: stream.List(),
 	}, nil
+
+	// return &pb.RecommendResponse{}, twirp.NewError(twirp.Unimplemented, "not implemented")
 }

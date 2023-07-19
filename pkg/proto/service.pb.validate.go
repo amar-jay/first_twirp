@@ -57,7 +57,7 @@ func (m *AnswerQuestionRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Openai
+	// no validation rules for Language
 
 	// no validation rules for Question
 
@@ -398,7 +398,9 @@ func (m *RecommendRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Question
+	// no validation rules for Language
+
+	// no validation rules for Request
 
 	if len(errors) > 0 {
 		return RecommendRequestMultiError(errors)
@@ -499,8 +501,6 @@ func (m *RecommendResponse) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for Answer
 
 	if all {
 		switch v := interface{}(m.GetError()).(type) {

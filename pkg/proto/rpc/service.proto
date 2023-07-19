@@ -11,8 +11,8 @@ service BotService {
 
 // [AnswerQuestionRequest] is the request object for the AnswerQuestion method.
 message AnswerQuestionRequest {
-	bytes openai = 1;
-	string question = 2;
+	string language = 1; // language of the question [en, fr, ...]
+	string question = 2; // question to be answered
 }
 
 // [AnswerQuestionResponse] is the response object for the AnswerQuestion method.
@@ -29,11 +29,13 @@ message Error {
 
 // [RecommendRequest] is the request object for the Recommend method.
 message RecommendRequest {
-	string question = 1;
+	string language = 1; // language of the question [en, fr, ...]
+	string request = 2;
 }
 
 // [RecommendResponse] is the response object for the Recommend method.
 message RecommendResponse {
-	string answer = 1; // response to the question
+	// a list of recommended items
+	repeated string recommendations = 1;
 	Error error = 2; // errror if any
 }
